@@ -48,7 +48,7 @@ body {
 .current {
   font-size: 3rem;
   font-weight: bold;
-  color: green;
+  color: #e7c670;
   margin: 30px 0;
   opacity: 0;
   transition: opacity 0.5s ease;
@@ -121,10 +121,10 @@ body {
 
   <script id="categories-json" type="application/json">
     [
-      { "name": "Category A", "start": "2025-05-29T15:00:00" },
-      { "name": "Category B", "start": "2025-05-29T15:30:00" },
-      { "name": "Category C", "start": "2025-05-29T15:45:00" },
-      { "name": "Category D", "start": "2025-05-29T23:00:00" }
+      { "name": "Category A", "start": "2025-05-29T10:00:00" },
+      { "name": "Category B", "start": "2025-05-29T10:30:00" },
+      { "name": "Category C", "start": "2025-05-29T11:00:00" },
+      { "name": "Category D", "start": "2025-05-29T11:30:00" }
     ]
   </script>
 
@@ -139,7 +139,7 @@ body {
       const totalSeconds = Math.floor(ms / 1000);
       const minutes = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
       const seconds = String(totalSeconds % 60).padStart(2, '0');
-      return ${minutes}:${seconds};
+      return `${minutes}:${seconds}`;
     };
 
     const clockEl = document.getElementById("clock");
@@ -180,7 +180,7 @@ body {
 if (curr?.name !== lastCurrent) {
   currentEl.classList.remove("visible");
   setTimeout(() => {
-    currentEl.textContent = curr ? Now: ${curr.name} : "—";
+    currentEl.textContent = curr ? `Now: ${curr.name}` : "—";
     currentEl.classList.add("visible");
   }, 200);
   lastCurrent = curr?.name;
