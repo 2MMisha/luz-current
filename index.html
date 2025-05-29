@@ -3,35 +3,44 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Category Schedule</title>
+  <title>Category Display</title>
   <style>
     body {
       font-family: sans-serif;
-      padding: 20px;
       background: #f5f5f5;
       color: #333;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
     }
     .category-block {
       background: white;
-      padding: 20px;
-      border-radius: 10px;
-      margin-bottom: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      padding: 40px;
+      border-radius: 16px;
+      text-align: center;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      min-width: 300px;
+    }
+    .previous, .next {
+      font-size: 1rem;
+      margin: 10px 0;
     }
     .current {
+      font-size: 2rem;
       font-weight: bold;
       color: #e7c670;
+      margin: 20px 0;
     }
   </style>
 </head>
 <body>
 
-  <h1>Category Schedule</h1>
-
   <div class="category-block">
-    <p>Previous: <span id="prev-category">—</span></p>
-    <p class="current">Current: <span id="current-category">—</span></p>
-    <p>Next: <span id="next-category">—</span></p>
+    <div class="previous">Previous: <span id="prev-category">—</span></div>
+    <div class="current" id="current-category">—</div>
+    <div class="next">Next: <span id="next-category">—</span></div>
   </div>
 
   <!-- Embedded JSON with categories -->
@@ -67,5 +76,6 @@
     updateCategories();
     setInterval(updateCategories, 30000); // update every 30 seconds
   </script>
+
 </body>
 </html>
