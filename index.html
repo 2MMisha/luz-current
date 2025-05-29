@@ -199,6 +199,9 @@ if (curr?.name !== lastCurrent) {
     updateCategories();
     setInterval(updateClock, 1000);
     setInterval(updateCategories, 1000); // обновляем каждую секунду
+setInterval(function() {
+    location.reload();
+}, 600000);
   </script>
 
 </body>
