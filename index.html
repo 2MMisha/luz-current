@@ -1,205 +1,179 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Category Display</title>
-  <style>
-* {
-  box-sizing: border-box;
-}
-
-body {
-  font-family: sans-serif;
-  background: #f5f5f5;
-  color: #333;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  text-align: center;
-}
-
-.clock {
-  position: absolute;
-  top: 10px;
-  right: 20px;
-  font-size: 1.2rem;
-  color: #666;
-}
-
-.category-block {
-  background: white;
-  padding: 60px 40px;
-  border-radius: 24px;
-  box-shadow: 0 0 40px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 700px;
-}
-
-.previous, .next {
-  font-size: 1.2rem;
-  margin: 20px 0;
-}
-
-.current {
-  font-size: 3rem;
-  font-weight: bold;
-  color: green;
-  margin: 30px 0;
-  opacity: 0;
-  transition: opacity 0.5s ease;
-}
-
-.current.visible {
-  opacity: 1;
-}
-
-.time {
-  font-size: 1rem;
-  color: #888;
-}
-
-.remaining-time {
-  font-size: 1.2rem;
-  color: #999;
-  margin-bottom: 20px;
-}
-
-.note {
-  margin-top: 30px;
-  font-size: 1rem;
-  color: red;
-  text-align: center;
-}
-
-@media (max-width: 600px) {
-  .category-block {
-    padding: 40px 20px;
-    max-width: 90%;
+<style>
+  /* Стили для вставки */
+  .clock {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 1.2rem;
+    color: #666;
   }
 
-  .current {
-    font-size: 2rem;
+  .category-block {
+    background: white;
+    padding: 60px 40px;
+    border-radius: 24px;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 700px;
+    margin: 0 auto;
+    text-align: center;
+    font-family: sans-serif;
+    color: #333;
   }
 
   .previous, .next {
+    font-size: 1.2rem;
+    margin: 20px 0;
+  }
+
+  .current {
+    font-size: 3rem;
+    font-weight: bold;
+    color: green;
+    margin: 30px 0;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+
+  .current.visible {
+    opacity: 1;
+  }
+
+  .time {
     font-size: 1rem;
+    color: #888;
   }
 
   .remaining-time {
-    font-size: 1rem;
+    font-size: 1.2rem;
+    color: #999;
+    margin-bottom: 20px;
   }
 
   .note {
-    font-size: 0.9rem;
+    margin-top: 30px;
+    font-size: 1rem;
+    color: red;
   }
-}
-  </style>
-</head>
-<body>
 
-  <div class="clock" id="clock">--:--</div>
+  @media (max-width: 600px) {
+    .category-block {
+      padding: 40px 20px;
+      max-width: 90%;
+    }
 
-  <div class="category-block">
-    <div class="previous">
-      Previous: <span id="prev-category">—</span><br/>
-      <span class="time" id="prev-time">—</span>
-    </div>
-    <div class="current" id="current-category">—</div>
-    <div class="remaining-time" id="remaining">—</div>
-    <div class="next">
-      Next: <span id="next-category">—</span><br/>
-      <span class="time" id="next-time">—</span>
-    </div>
+    .current {
+      font-size: 2rem;
+    }
+
+    .previous, .next {
+      font-size: 1rem;
+    }
+
+    .remaining-time {
+      font-size: 1rem;
+    }
+
+    .note {
+      font-size: 0.9rem;
+    }
+  }
+</style>
+
+<div class="clock" id="clock">--:--</div>
+
+<div class="category-block">
+  <div class="previous">
+    Previous: <span id="prev-category">—</span><br/>
+    <span class="time" id="prev-time">—</span>
   </div>
+  <div class="current" id="current-category">—</div>
+  <div class="remaining-time" id="remaining">—</div>
+  <div class="next">
+    Next: <span id="next-category">—</span><br/>
+    <span class="time" id="next-time">—</span>
+  </div>
+</div>
 
-  <div class="note">The schedule may not be accurate.</div>
+<div class="note">The schedule may not be accurate.</div>
 
-  <script id="categories-json" type="application/json">
-    [
-      { "name": "Category A", "start": "2025-05-29T15:00:00" },
-      { "name": "Category B", "start": "2025-05-29T15:30:00" },
-      { "name": "Category C", "start": "2025-05-29T15:45:00" },
-      { "name": "Category D", "start": "2025-05-29T16:00:00" }
-    ]
-  </script>
+<script id="categories-json" type="application/json">
+  [
+    { "name": "Category A", "start": "2025-05-29T15:00:00" },
+    { "name": "Category B", "start": "2025-05-29T15:30:00" },
+    { "name": "Category C", "start": "2025-05-29T15:45:00" },
+    { "name": "Category D", "start": "2025-05-29T16:00:00" }
+  ]
+</script>
 
-  <script>
-    const formatTime = (iso) => {
-      const date = new Date(iso);
-      return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    };
+<script>
+  const formatTime = (iso) => {
+    const date = new Date(iso);
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  };
 
-    const formatCountdown = (ms) => {
-      if (ms <= 0) return "00:00";
-      const totalSeconds = Math.floor(ms / 1000);
-      const minutes = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
-      const seconds = String(totalSeconds % 60).padStart(2, '0');
-      return `${minutes}:${seconds}`;
-    };
+  const formatCountdown = (ms) => {
+    if (ms <= 0) return "00:00";
+    const totalSeconds = Math.floor(ms / 1000);
+    const minutes = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
+    const seconds = String(totalSeconds % 60).padStart(2, '0');
+    return `${minutes}:${seconds}`;
+  };
 
-    const clockEl = document.getElementById("clock");
-    const currentEl = document.getElementById("current-category");
-    const remainingEl = document.getElementById("remaining");
+  const clockEl = document.getElementById("clock");
+  const currentEl = document.getElementById("current-category");
+  const remainingEl = document.getElementById("remaining");
 
-    let lastCurrent = "";
+  let lastCurrent = "";
 
-    function updateClock() {
-      const now = new Date();
-      clockEl.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-    }
+  function updateClock() {
+    const now = new Date();
+    clockEl.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  }
 
-    function updateCategories() {
-      const now = new Date();
-      const categories = JSON.parse(document.getElementById("categories-json").textContent);
+  function updateCategories() {
+    const now = new Date();
+    const categories = JSON.parse(document.getElementById("categories-json").textContent);
 
-      let currentIndex = -1;
-      for (let i = 0; i < categories.length; i++) {
-        const start = new Date(categories[i].start);
-        const nextStart = categories[i + 1] ? new Date(categories[i + 1].start) : new Date(9999, 0, 1);
-        if (now >= start && now < nextStart) {
-          currentIndex = i;
-          break;
-        }
-      }
-
-      const prev = categories[currentIndex - 1];
-      const curr = categories[currentIndex];
-      const next = categories[currentIndex + 1];
-
-      document.getElementById("prev-category").textContent = prev?.name || "—";
-      document.getElementById("prev-time").textContent = prev ? formatTime(prev.start) : "—";
-
-      document.getElementById("next-category").textContent = next?.name || "—";
-      document.getElementById("next-time").textContent = next ? formatTime(next.start) : "—";
-
-if (curr?.name !== lastCurrent) {
-  currentEl.classList.remove("visible");
-  setTimeout(() => {
-    currentEl.textContent = curr ? `Now: ${curr.name}` : "—";
-    currentEl.classList.add("visible");
-  }, 200);
-  lastCurrent = curr?.name;
-}
-
-
-      if (next) {
-        const remaining = new Date(next.start) - now;
-        remainingEl.textContent = "Time left: " + formatCountdown(remaining);
-      } else {
-        remainingEl.textContent = "";
+    let currentIndex = -1;
+    for (let i = 0; i < categories.length; i++) {
+      const start = new Date(categories[i].start);
+      const nextStart = categories[i + 1] ? new Date(categories[i + 1].start) : new Date(9999, 0, 1);
+      if (now >= start && now < nextStart) {
+        currentIndex = i;
+        break;
       }
     }
 
-    updateClock();
-    updateCategories();
-    setInterval(updateClock, 1000);
-    setInterval(updateCategories, 1000); // обновляем каждую секунду
-  </script>
+    const prev = categories[currentIndex - 1];
+    const curr = categories[currentIndex];
+    const next = categories[currentIndex + 1];
 
-</body>
-</html>
+    document.getElementById("prev-category").textContent = prev?.name || "—";
+    document.getElementById("prev-time").textContent = prev ? formatTime(prev.start) : "—";
+
+    document.getElementById("next-category").textContent = next?.name || "—";
+    document.getElementById("next-time").textContent = next ? formatTime(next.start) : "—";
+
+    if (curr?.name !== lastCurrent) {
+      currentEl.classList.remove("visible");
+      setTimeout(() => {
+        currentEl.textContent = curr ? `Now: ${curr.name}` : "—";
+        currentEl.classList.add("visible");
+      }, 200);
+      lastCurrent = curr?.name;
+    }
+
+    if (next) {
+      const remaining = new Date(next.start) - now;
+      remainingEl.textContent = "Time left: " + formatCountdown(remaining);
+    } else {
+      remainingEl.textContent = "";
+    }
+  }
+
+  updateClock();
+  updateCategories();
+  setInterval(updateClock, 1000);
+  setInterval(updateCategories, 1000);
+</script>
