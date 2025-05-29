@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Category Schedule</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      background: #f5f5f5;
+      color: #333;
+    }
+    .category-block {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .current {
+      font-weight: bold;
+      color: #e7c670;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Category Schedule</h1>
+
+  <div class="category-block">
+    <p>Previous: <span id="prev-category">—</span></p>
+    <p class="current">Current: <span id="current-category">—</span></p>
+    <p>Next: <span id="next-category">—</span></p>
+  </div>
+
+  <!-- Embedded JSON with categories -->
+  <script id="categories-json" type="application/json">
+    [
+      { "name": "Category A", "start": "2025-05-29T10:00:00" },
+      { "name": "Category B", "start": "2025-05-29T10:30:00" },
+      { "name": "Category C", "start": "2025-05-29T11:00:00" },
+      { "name": "Category D", "start": "2025-05-29T11:30:00" }
+    ]
+  </script>
+
+  <script>
+    function updateCategories() {
+      const now = new Date();
+      const categories = JSON.parse(document.getElementById("categories-json").textContent);
+
+      let currentIndex = -1;
+      for (let i = 0; i < categories.length; i++) {
+        const start = new Date(categories[i].start);
+        const nextStart = categories[i + 1] ? new Date(categories[i + 1].start) : new Date(9999, 0, 1);
+        if (now >= start && now < nextStart) {
+          currentIndex = i;
+          break;
+        }
+      }
+
+      document.getElementById("prev-category").textContent = categories[currentIndex - 1]?.name || "—";
+      document.getElementById("current-category").textContent = categories[currentIndex]?.name || "—";
+      document.getElementById("next-category").textContent = categories[currentIndex + 1]?.name || "—";
+    }
+
+    updateCategories();
+    setInterval(updateCategories, 30000); // update every 30 seconds
+  </script>
+</body>
+</html>
