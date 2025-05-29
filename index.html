@@ -177,14 +177,15 @@ body {
       document.getElementById("next-category").textContent = next?.name || "—";
       document.getElementById("next-time").textContent = next ? formatTime(next.start) : "—";
 
-      if (curr?.name !== lastCurrent) {
-        currentEl.classList.remove("visible");
-        setTimeout(() => {
-          currentEl.textContent = curr?.name || "—";
-          currentEl.classList.add("visible");
-        }, 200);
-        lastCurrent = curr?.name;
-      }
+if (curr?.name !== lastCurrent) {
+  currentEl.classList.remove("visible");
+  setTimeout(() => {
+    currentEl.textContent = curr ? `Now: ${curr.name}` : "—";
+    currentEl.classList.add("visible");
+  }, 200);
+  lastCurrent = curr?.name;
+}
+
 
       if (next) {
         const remaining = new Date(next.start) - now;
