@@ -21,7 +21,7 @@
       border-radius: 16px;
       text-align: center;
       box-shadow: 0 0 20px rgba(0,0,0,0.1);
-      min-width: 300px;
+      min-width: 320px;
     }
     .previous, .next {
       font-size: 1rem;
@@ -32,15 +32,30 @@
       font-weight: bold;
       color: #e7c670;
       margin: 20px 0;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+    .current.visible {
+      opacity: 1;
+    }
+    .time {
+      font-size: 0.9rem;
+      color: #888;
     }
   </style>
 </head>
 <body>
 
   <div class="category-block">
-    <div class="previous">Previous: <span id="prev-category">—</span></div>
+    <div class="previous">
+      Previous: <span id="prev-category">—</span><br/>
+      <span class="time" id="prev-time">—</span>
+    </div>
     <div class="current" id="current-category">—</div>
-    <div class="next">Next: <span id="next-category">—</span></div>
+    <div class="next">
+      Next: <span id="next-category">—</span><br/>
+      <span class="time" id="next-time">—</span>
+    </div>
   </div>
 
   <!-- Embedded JSON with categories -->
@@ -54,6 +69,13 @@
   </script>
 
   <script>
+    const formatTime = (iso) => {
+      const date = new Date(iso);
+      return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    };
+
+    let lastCurrent = "";
+
     function updateCategories() {
       const now = new Date();
       const categories = JSON.parse(document.getElementById("categories-json").textContent);
@@ -68,13 +90,30 @@
         }
       }
 
-      document.getElementById("prev-category").textContent = categories[currentIndex - 1]?.name || "—";
-      document.getElementById("current-category").textContent = categories[currentIndex]?.name || "—";
-      document.getElementById("next-category").textContent = categories[currentIndex + 1]?.name || "—";
+      const prev = categories[currentIndex - 1];
+      const curr = categories[currentIndex];
+      const next = categories[currentIndex + 1];
+
+      document.getElementById("prev-category").textContent = prev?.name || "—";
+      document.getElementById("prev-time").textContent = prev ? formatTime(prev.start) : "—";
+
+      document.getElementById("next-category").textContent = next?.name || "—";
+      document.getElementById("next-time").textContent = next ? formatTime(next.start) : "—";
+
+      const currentEl = document.getElementById("current-category");
+
+      if (curr?.name !== lastCurrent) {
+        currentEl.classList.remove("visible");
+        setTimeout(() => {
+          currentEl.textContent = curr?.name || "—";
+          currentEl.classList.add("visible");
+        }, 200);
+        lastCurrent = curr?.name;
+      }
     }
 
     updateCategories();
-    setInterval(updateCategories, 30000); // update every 30 seconds
+    setInterval(updateCategories, 30000); // every 30 seconds
   </script>
 
 </body>
